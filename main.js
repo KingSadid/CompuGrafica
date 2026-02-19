@@ -10,7 +10,7 @@ let y = canvas.height / 2;
 let dx = 4;
 let dy = 4;
 const radius = 80;
-const sides = 5;
+const sides = 8;
 let rotation = 0;
 let color = "red";
 
