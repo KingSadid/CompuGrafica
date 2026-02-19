@@ -41,7 +41,7 @@ const PathGenerators = {
 };
 
 const TransformBehaviors = {
-    normal: () => {}, // Static shape
+    normal: () => {}, 
     rotate: (state, deltaTime) => {
         state.rotation += 2 * deltaTime;
     },
