@@ -5,7 +5,7 @@ const CONFIG = {
     colors: {
         triangle: '#00D2FF',
         pentagon: '#FF2A7A',
-        star: '#FFD700',
+        rhombus: '#FFD700', // Previously star color
         square: '#3A86FF'
     }
 };
@@ -23,25 +23,11 @@ const PathGenerators = {
     triangle: (ctx, size) => PathGenerators.regularPolygon(ctx, size, 3),
     pentagon: (ctx, size) => PathGenerators.regularPolygon(ctx, size, 5),
     square: (ctx, size) => PathGenerators.regularPolygon(ctx, size, 4, -Math.PI / 4),
-    star: (ctx, size) => {
-        const spikes = 5;
-        const outerRadius = size / 2;
-        const innerRadius = size / 4;
-        let angle = -Math.PI / 2;
-        const step = Math.PI / spikes;
-
-        ctx.moveTo(0, -outerRadius);
-        for (let i = 0; i < spikes; i++) {
-            ctx.lineTo(Math.cos(angle) * outerRadius, Math.sin(angle) * outerRadius);
-            angle += step;
-            ctx.lineTo(Math.cos(angle) * innerRadius, Math.sin(angle) * innerRadius);
-            angle += step;
-        }
-    }
+    rhombus: (ctx, size) => PathGenerators.regularPolygon(ctx, size, 4) // Default rotation creates a rhombus/diamond
 };
 
 const TransformBehaviors = {
-    normal: () => {}, 
+    normal: () => {},
     rotate: (state, deltaTime) => {
         state.rotation += 2 * deltaTime;
     },
@@ -94,7 +80,7 @@ class Shape {
         ctx.beginPath();
         this.pathGenerator(ctx, this.size);
         ctx.closePath();
-        ctx.stroke(); 
+        ctx.stroke();
         
         ctx.restore();
     }
@@ -115,16 +101,15 @@ class CanvasApp {
 
         this.shapes.push(new Shape('triangle', 'normal', colors.triangle, startX, centerY, shapeSize));
         this.shapes.push(new Shape('pentagon', 'rotate', colors.pentagon, startX + spacing, centerY, shapeSize));
-        this.shapes.push(new Shape('star', 'translate', colors.star, startX + spacing * 2, centerY, shapeSize));
+        this.shapes.push(new Shape('rhombus', 'translate', colors.rhombus, startX + spacing * 2, centerY, shapeSize));
         this.shapes.push(new Shape('square', 'scale', colors.square, startX + spacing * 3, centerY, shapeSize));
 
         requestAnimationFrame((time) => this.loop(time));
     }
 
     loop(currentTime) {
-        
         let deltaTime = (currentTime - this.lastTime) / 1000;
-        if (deltaTime > 0.1) deltaTime = 0.1; 
+        if (deltaTime > 0.1) deltaTime = 0.1;
         this.lastTime = currentTime;
 
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
